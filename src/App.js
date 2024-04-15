@@ -5,39 +5,52 @@ import Sidebar from "./component/Sidebar";
 import MainContent from "./component/MainContent";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import Loader from "./component/Loader";
 
 function App() {
   const [animeList, setAnimeList] = useState([]);
   const [topAnime, setTopAnime] = useState([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [isLoading, setLoading] = useState(true);
   // const [searchedAnime, setSelectedAnime] = useState([]);
 
   const GetTopAnime = async () => {
+    setLoading(true);
+    console.log("search === " + search);
     const getTopList = await fetch(
-      `https://api.jikan.moe/v4/top/anime?q=${search}&page=${page}`
+      `https://api.jikan.moe/v4/top/anime?page=${page}&order_by=title&sort=asc&sfw`
     ).then((res) => res.json());
     console.log("response  " + JSON.stringify(getTopList));
     setTopAnime(getTopList.data?.slice(0, 5));
     setAnimeList(() => {
+      setLoading(false);
       // console.log(" anime List raw: " + JSON.stringify(getTopList));
       return getTopList?.data;
     });
   };
 
-  // const searchAnime = async (animeName) => {
-  //   const searchedAnime = await fetch(
-  //     `https://api.jikan.moe/v4/top/anime?q=${animeName}limit=24&order_by=title&sort=asc`
-  //   ).then((res) => res.json());
-  //   setAnimeList(() => {
-  //     console.log("response from: " + JSON.stringify(searchedAnime.data));
-  //     return searchedAnime.data;
-  //   });
-  // };
+  const searchAnime = async (animeName) => {
+    const searchedAnime = await fetch(
+      `https://api.jikan.moe/v4/anime?q=${animeName}&page=${page}&order_by=title&sort=asc&sfw`
+    ).then((res) => res.json());
+    setAnimeList(() => {
+      setSearch("");
+      console.log("response from: " + JSON.stringify(searchedAnime.data));
+      return searchedAnime.data;
+    });
+  };
 
-  const HandleSearch = () => {
-    console.log(search + " is the search");
-    GetTopAnime();
+  const HandleSearch = async (anime) => {
+    // const anime = sessionStorage.getItem("search")
+    //   ? sessionStorage.getItem("search")
+    //   : search;
+    console.log(anime + " is the search");
+    const animeName = anime.length > 0 ? search : "Naruto";
+    console.log("anime name: " + animeName);
+    searchAnime(animeName);
+    setSearch("");
+    // sessionStorage.removeItem("search");
   };
 
   const HandlePagination = (pageNumber) => {
@@ -53,13 +66,16 @@ function App() {
         left: 0,
         behavior: "smooth",
       });
-      GetTopAnime();
+      const anime =
+        sessionStorage.getItem("search") ?? sessionStorage.getItem("search");
+      anime.length > 0 ? HandleSearch(anime) : GetTopAnime();
     },
     [page],
     [search]
   );
+
   // useEffect(() => {
-  //   searchAnime(search);
+  //   HandleSearch(search);
   // }, [search]);
 
   return (
@@ -67,13 +83,15 @@ function App() {
       <Header />
       <div className="content-wrap">
         {/* <Sidebar topAnime={topAnime} /> */}
+
         <MainContent
-          HandleSearch={HandleSearch}
+          // HandleSearch={HandleSearch}
           search={search}
           setSearch={setSearch}
           animeList={animeList}
           HandlePagination={HandlePagination}
           setPage={setPage}
+          isLoading={isLoading}
         />
       </div>
     </div>

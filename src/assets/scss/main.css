@@ -10,7 +10,7 @@ header {
   padding-top: 5px;
   padding-bottom: 50px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
 }
 header div {
@@ -25,6 +25,7 @@ header div img {
      object-fit: contain;
 }
 header h1 {
+  padding-left: 14%;
   color: #cb8c2f;
   font-size: 36px;
   font-weight: 400;
@@ -33,16 +34,81 @@ header h1 {
 header h1 strong {
   color: #9c9595;
 }
-header p {
-  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
-  color: white;
-  font-size: 12px;
-  font-weight: 100;
+
+.Navbar {
+  width: 25%;
+  height: 10vh;
   text-align: center;
-  font-stretch: expanded;
-  padding-top: -5px;
+}
+.Navbar ul {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.Navbar ul li {
+  padding-top: 7%;
+}
+.Navbar ul li a h3 {
+  text-decoration: none;
 }
 
+a {
+  text-decoration: none;
+  color: white;
+}
+a h3 {
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+}
+a h3:hover {
+  color: #cb8c2f;
+  transition: cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.loader img {
+  padding: 10px;
+  margin-left: 40%;
+  position: fixed;
+  width: 10%;
+  height: 15%;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-blend-mode: overlay;
+  z-index: 1000;
+}
+
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+}
+
+.loader-next {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 .content-wrap {
   display: flex;
 }
@@ -121,9 +187,9 @@ header p {
   margin: 32px -8px 0px;
 }
 .content-wrap main .anime-list .anime-card {
-  flex: 1 1 20%;
+  flex: 1 2 25%;
   max-width: 20%;
-  padding: 20px 8px;
+  padding: 30px 20px;
 }
 .content-wrap main .anime-list .anime-card a {
   text-decoration: none;
@@ -135,7 +201,7 @@ header p {
 .content-wrap main .anime-list .anime-card figure img {
   display: block;
   width: 100%;
-  height: 150px;
+  height: 350px;
   -o-object-fit: cover;
      object-fit: cover;
   border-radius: 16px;
