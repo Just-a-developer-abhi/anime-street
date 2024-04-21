@@ -17,16 +17,15 @@ function App() {
 
   const GetTopAnime = async () => {
     setLoading(true);
-    console.log("search === " + search);
+    console.log("page === " + page);
     const getTopList = await fetch(
       `https://api.jikan.moe/v4/top/anime?page=${page}&order_by=title&sort=asc&sfw`
     ).then((res) => res.json());
     console.log("response  " + JSON.stringify(getTopList));
     setTopAnime(getTopList.data?.slice(0, 5));
-    setAnimeList(() => {
+    setAnimeList((prev) => {
       setLoading(false);
-      // console.log(" anime List raw: " + JSON.stringify(getTopList));
-      return getTopList?.data;
+      return [...prev, ...getTopList?.data];
     });
   };
 
@@ -59,24 +58,37 @@ function App() {
     }
   };
 
-  useEffect(
-    () => {
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: "smooth",
-      });
-      const anime =
-        sessionStorage.getItem("search") ?? sessionStorage.getItem("search");
-      anime.length > 0 ? HandleSearch(anime) : GetTopAnime();
-    },
-    [page],
-    [search]
-  );
+  const handleInfiniteScroll = async () => {
+    console.log("handleInfiniteScroll");
+    try {
+      if (
+        window.innerHeight + document.documentElement.scrollTop + 1 >=
+        document.documentElement.scrollHeight
+      ) {
+        setPage((prev) => {
+          return prev++;
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  // useEffect(() => {
-  //   HandleSearch(search);
-  // }, [search]);
+  useEffect(() => {
+    // window.scrollTo({
+    //   top: 0,
+    //   left: 0,
+    //   behavior: "smooth",
+    // });
+    const anime =
+      sessionStorage.getItem("search") ?? sessionStorage.getItem("search");
+    anime?.length > 0 ? HandleSearch(anime) : GetTopAnime();
+  }, [search]);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleInfiniteScroll);
+    return () => window.removeEventListener("scroll", handleInfiniteScroll);
+  }, [page]);
 
   return (
     <div className="App">

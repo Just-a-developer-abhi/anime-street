@@ -3,6 +3,7 @@ import AnimeCard from "./AnimeCard";
 import Skeleton from "react-loading-skeleton";
 import Pagination from "./Pagination";
 import Loader from "./Loader";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const MainContent = (props) => {
   const [pageNumber, setpageNumber] = useState(1);
@@ -19,6 +20,10 @@ const MainContent = (props) => {
     console.log("search in the main content..." + e.target.value);
     sessionStorage.setItem("search", e.target.value);
     props.setSearch(e.target.value);
+  };
+
+  const callWithDifferentpage = () => {
+    props.setPage((prev) => prev++);
   };
 
   const activesStyle = {
@@ -51,36 +56,13 @@ const MainContent = (props) => {
           </button>
         </form>
       </div>
-      <div className="pagination">
-        {pages.map((page) => (
-          <div
-            key={page}
-            style={choosingStyle(page)}
-            onClick={(e) => handlePaginationOnClick(page)}
-          >
-            {page}
-          </div>
-        ))}
-      </div>
-      {/* {props.isLoading ? (
-        <>
-          <Loader />
-          <div className="anime-list">
-            {props.animeList?.map((anime) => (
-              <AnimeCard anime={anime} key={anime.mal_id} />
-            ))}
-          </div>
-        </>
-      ) : (
-        <div className="anime-list">
-          {props.animeList?.map((anime) => (
-            <AnimeCard anime={anime} key={anime.mal_id} />
-          ))}
-        </div>
-      )} */}
       <div className="anime-list">
         {props.animeList?.map((anime) => (
-          <AnimeCard anime={anime} key={anime.mal_id} isLoading={props.isLoading} />
+          <AnimeCard
+            anime={anime}
+            key={anime.mal_id}
+            isLoading={props.isLoading}
+          />
         ))}
       </div>
       <div className="pagination">
